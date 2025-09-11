@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taller Interactivo de Convivencia Escolar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Beige, Muted Teal, Dark Slate Gray) -->
+    <!-- Application Structure Plan: A comprehensive, single-page application structured to mirror a 2-hour workshop agenda. The user navigates through sections: Context, Demo, detailed Simulation, Impact, and Future. This sequential flow is intuitive. The key interaction is the enhanced simulation modal, which now visually splits the automated workflow into 'Internal' and 'External' routes, directly reflecting the provided Apps Script logic. This makes the system's decision-making process tangible for participants. -->
+    <!-- Visualization & Content Choices: 1. Context: Standard HTML/CSS infographic. 2. Demo: JS-animated sequence of the general data flow. 3. Simulation: A detailed modal uses a two-column layout to show parallel processes. 4. Dashboard: An embedded Looker Studio report for live data visualization. 5. Impact: Chart.js Bar Chart and HTML grids. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+            color: #34495E;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        .nav-link {
+            transition: color 0.3s ease, border-color 0.3s ease;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #14B8A6;
+            border-bottom-color: #14B8A6;
+        }
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .case-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .case-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .modal-backdrop {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform, opacity;
+        }
+        .flow-item {
+            transition: all 0.5s ease-in-out;
+        }
+        .flow-item.active {
+            background-color: #14B8A6;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(20, 184, 166, 0.5);
+        }
+        .flow-item.active .flow-icon {
+            transform: rotate(360deg) scale(1.2);
+        }
+        .flow-arrow {
+            opacity: 0.3;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .flow-arrow.active {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+        .cascade-item {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .cascade-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-teal-600">Gestión de Convivencia 2.0</h1>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#contexto" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Contexto</a>
+                <a href="#demo" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Demo</a>
+                <a href="#simulacion" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Simulación</a>
+                <a href="#impacto" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Impacto</a>
+                <a href="#dashboard" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Dashboard</a>
+                <a href="#cierre" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Cierre</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        
+        <section id="hero" class="relative text-white min-h-[60vh] md:min-h-[70vh] flex items-center justify-center text-center bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop');">
+            <div class="absolute inset-0 bg-black/60"></div>
+            <div class="relative z-10 px-4">
+                <span class="text-teal-400 font-semibold tracking-wide uppercase">Taller de Innovación Educativa</span>
+                <h2 class="text-4xl md:text-6xl font-extrabold mt-4 mb-6 leading-tight">Revolucionando la Gestión de la Convivencia Escolar</h2>
+                <p class="text-lg text-gray-200 max-w-3xl mx-auto">Una inmersión de 2 horas para explorar cómo la automatización nos permite ser más eficientes, transparentes y humanos.</p>
+            </div>
+        </section>
+        
+        <section id="institutional-banner" class="py-12 bg-slate-100">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <img src="https://i.postimg.cc/VN6nHMHm/Imagen1.jpg" alt="Banner Institucional" class="w-full h-auto max-w-5xl mx-auto rounded-lg shadow-md" onerror="this.style.display='none'">
+            </div>
+        </section>
+
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <section id="contexto" class="py-20 section-fade-in">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-slate-800">El Punto de Partida: Contexto y Necesidad</h3>
+                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Basados en la <strong class="text-teal-600">Ley 1620/2013</strong>, enfrentábamos el desafío de gestionar situaciones complejas con herramientas análogas. El tiempo administrativo le restaba espacio a la intervención pedagógica.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-lg grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="border-r-0 md:border-r-2 border-dashed pr-0 md:pr-8">
+                        <h4 class="text-2xl font-bold text-red-600 mb-6 text-center">❌ El Escenario Anterior</h4>
+                        <ul class="space-y-4 text-gray-700">
+                            <li class="flex"><span class="mr-3 mt-1 text-lg">📂</span>Actas en papel, archivadores físicos.</li>
+                            <li class="flex"><span class="mr-3 mt-1 text-lg">⏳</span>Procesos manuales lentos y duplicación de esfuerzos.</li>
+                            <li class="flex"><span class="mr-3 mt-1 text-lg">❓</span>Falta de trazabilidad y seguimiento claro de los casos.</li>
+                            <li class="flex"><span class="mr-3 mt-1 text-lg">🤯</span>Sobrecarga para docentes y coordinadores.</li>
+                        </ul>
+                    </div>
+                    <div class="mt-8 md:mt-0">
+                        <h4 class="text-2xl font-bold text-green-600 mb-6 text-center">✅ La Visión de Futuro</h4>
+                        <ul class="space-y-4 text-gray-700">
+                            <li class="flex"><span class="mr-3 mt-1 text-lg">⚡️</span>Agilidad: de horas a minutos en el registro y comunicación.</li>
+                            <li class="flex"><span class="mr-3 mt-1 text-lg">🔍</span>Transparencia y evidencias organizadas en la nube.</li>
+                            <li class="flex"><span class="mr-3 mt-1 text-lg">🤝</span>Claridad en el flujo de responsabilidades y articulación.</li>
+                            <li class="flex"><span class="mr-3 mt-1 text-lg">👨‍🏫</span>Más tiempo para lo pedagógico y el acompañamiento.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="demo" class="py-20 section-fade-in">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-slate-800">Demostración: Vea el Sistema en Acción</h3>
+                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Así es como transformamos un reporte en un flujo de trabajo inteligente y automatizado. Presione "Iniciar Demostración" para ver la magia ocurrir paso a paso.</p>
+                </div>
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <div class="flex flex-col md:flex-row justify-around items-center gap-4 text-center mb-10">
+                        <div id="flow-1" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200">
+                            <div class="text-4xl flow-icon transition-transform duration-500">📝</div><p class="font-semibold mt-2">Formulario</p>
+                        </div>
+                        <div id="arrow-1" class="flow-arrow text-4xl text-slate-400">➡️</div>
+                        <div id="flow-2" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200">
+                            <div class="text-4xl flow-icon transition-transform duration-500">📈</div><p class="font-semibold mt-2">Base de Datos</p>
+                        </div>
+                        <div id="arrow-2" class="flow-arrow text-4xl text-slate-400">➡️</div>
+                        <div id="flow-3" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200">
+                            <div class="text-4xl flow-icon transition-transform duration-500">📄</div><p class="font-semibold mt-2">PDF + QR</p>
+                        </div>
+                        <div id="arrow-3" class="flow-arrow text-4xl text-slate-400">➡️</div>
+                        <div id="flow-4" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200">
+                            <div class="text-4xl flow-icon transition-transform duration-500">📧</div><p class="font-semibold mt-2">Notificaciones</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button id="start-demo-btn" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                            Iniciar Demostración
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="simulacion" class="py-20 section-fade-in">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-slate-800">Simulación de Rutas de Atención</h3>
+                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Ahora es su turno. Seleccione uno de los casos ficticios para ver la ruta de atención completa que el sistema activaría automáticamente, diferenciando el flujo interno del externo.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="case-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer" data-case="1">
+                        <h4 class="font-bold text-xl text-yellow-600">Caso 1: Conflicto Leve</h4>
+                        <p class="text-gray-600 mt-2">Dos estudiantes de 7° tienen una discusión verbal en el patio. No hay agresión física.</p>
+                        <button class="mt-4 text-teal-600 font-semibold">Iniciar Simulación →</button>
+                    </div>
+                    <div class="case-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer" data-case="2">
+                        <h4 class="font-bold text-xl text-orange-600">Caso 2: Acoso Escolar</h4>
+                        <p class="text-gray-600 mt-2">Un estudiante de 9° reporta ser intimidado repetitivamente por un compañero a través de redes sociales.</p>
+                         <button class="mt-4 text-teal-600 font-semibold">Iniciar Simulación →</button>
+                    </div>
+                    <div class="case-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer" data-case="3">
+                        <h4 class="font-bold text-xl text-red-600">Caso 3: Presunto Consumo de SPA</h4>
+                        <p class="text-gray-600 mt-2">Un docente reporta un comportamiento inusual y posible olor a marihuana en un estudiante de 11°.</p>
+                         <button class="mt-4 text-teal-600 font-semibold">Iniciar Simulación →</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="impacto" class="py-20 section-fade-in">
+                 <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-slate-800">Impacto y Resultados Medibles</h3>
+                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">La automatización generó beneficios tangibles en eficiencia, organización y colaboración interinstitucional.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    <div class="lg:col-span-3 bg-white p-8 rounded-2xl shadow-lg">
+                        <h4 class="text-xl font-bold text-center mb-4">Optimización del Tiempo de Gestión por Caso</h4>
+                        <div class="chart-container">
+                            <canvas id="timeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <h4 class="text-xl font-bold mb-4">Alianzas Estratégicas</h4>
+                            <p class="text-gray-600 mb-4">El sistema facilita la articulación y envío de reportes a entidades clave:</p>
+                            <div class="grid grid-cols-2 gap-4 text-center font-medium text-gray-700">
+                                <div class="bg-slate-100 p-3 rounded-lg">ICBF</div>
+                                <div class="bg-slate-100 p-3 rounded-lg">Policía de Infancia</div>
+                                <div class="bg-slate-100 p-3 rounded-lg">Secretaría de Educación</div>
+                                <div class="bg-slate-100 p-3 rounded-lg">Comisaría de Familia</div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <h4 class="text-xl font-bold mb-4">Resultados Cualitativos</h4>
+                             <ul class="space-y-3 list-inside text-gray-700">
+                                <li><span class="font-bold text-teal-600">Claridad:</span> Flujos de responsabilidad definidos.</li>
+                                <li><span class="font-bold text-teal-600">Seguridad:</span> Evidencias digitales y organizadas.</li>
+                                <li><span class="font-bold text-teal-600">Confianza:</span> Comunicación transparente con acudientes.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="dashboard" class="py-20 section-fade-in">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-slate-800">Dashboard de Seguimiento en Vivo</h3>
+                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Este es un ejemplo en tiempo real de cómo se visualizan los datos recopilados, permitiendo un análisis de tendencias y una toma de decisiones informada.</p>
+                </div>
+                <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-lg">
+                    <iframe width="100%" height="800" src="https://lookerstudio.google.com/embed/reporting/615595e9-2d29-46f8-be77-4b696884efb1/page/N0MdE" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+                </div>
+            </section>
+
+            <section id="cierre" class="py-24 bg-white rounded-2xl shadow-lg section-fade-in my-16">
+                <div class="text-center">
+                    <h3 class="text-3xl font-bold text-slate-800">Cierre, Reflexión y Próximos Pasos</h3>
+                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Hemos visto el qué, el cómo y el porqué. Ahora, la pregunta más importante es para ustedes.</p>
+                    <div class="bg-teal-50 border-l-4 border-teal-500 text-teal-800 p-6 rounded-r-lg max-w-2xl mx-auto mt-10 text-left">
+                        <h4 class="font-bold text-xl">Para la Reflexión:</h4>
+                        <p class="mt-2 text-lg italic">¿Cómo podría una iniciativa de automatización como esta transformar un proceso en su propia institución o área de trabajo?</p>
+                    </div>
+                    <div class="mt-12">
+                        <h4 class="text-2xl font-bold text-slate-700">Espacio para Preguntas y Respuestas</h4>
+                        <p class="text-gray-500 mt-2">¡Estamos listos para conversar!</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <div id="case-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-50 modal-backdrop opacity-0">
+        <div class="bg-slate-50 rounded-2xl shadow-2xl w-full max-w-5xl p-8 modal-content opacity-0 transform scale-90 -translate-y-10 overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h3 id="modal-title" class="text-2xl font-bold text-slate-800"></h3>
+                    <p id="modal-description" class="text-gray-600 mt-1"></p>
+                </div>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-800 text-4xl leading-none">&times;</button>
+            </div>
+            
+            <div class="text-center mb-6">
+                <div class="bg-white p-4 rounded-lg inline-block shadow">
+                    <h4 class="font-semibold text-lg text-slate-700">Punto de Partida</h4>
+                    <p class="text-slate-600">Un docente o directivo diligencia el <strong>Formulario de Rutas de Atención</strong>.</p>
+                </div>
+                <div class="text-4xl text-slate-400 my-2">⬇️</div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div id="internal-route-container" class="bg-white p-6 rounded-lg border border-teal-200 shadow-md">
+                    <h4 class="font-bold text-xl text-teal-800 mb-4 text-center">🏛️ Flujo de Ruta Interna</h4>
+                    <ul id="modal-internal-route" class="space-y-4 relative">
+                        <div class="absolute left-5 top-0 h-full w-0.5 bg-slate-200"></div>
+                    </ul>
+                </div>
+                <div id="external-route-container" class="bg-white p-6 rounded-lg border border-red-200 shadow-md">
+                     <h4 class="font-bold text-xl text-red-800 mb-4 text-center">🌍 Flujo de Ruta Externa</h4>
+                    <ul id="modal-external-route" class="space-y-4 relative">
+                        <div class="absolute left-5 top-0 h-full w-0.5 bg-slate-200"></div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-800 text-white mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+            <p class="text-xl font-medium italic">“Automatizar no significa deshumanizar; significa liberar el potencial humano para las tareas que verdaderamente importan.”</p>
+            <div class="mt-6 border-t border-slate-700 pt-6 text-slate-400 text-sm">
+                <p class="font-bold text-slate-300 mb-2">Expositores</p>
+                <p>MG. Victor Alonso Aristizábal Sanchez</p>
+                <p>Mg. Jhon Jairo Cardona Aguirre</p>
+                <p>MG. Gemay Andres Sanchez Vera</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Navigation Logic ---
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const observerOptions = { rootMargin: '-100px 0px -50% 0px' };
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+                    });
+                }
+            });
+        }, observerOptions);
+        sections.forEach(section => sectionObserver.observe(section));
+
+        // --- Section Fade-in Logic ---
+        const fadeObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.section-fade-in').forEach(section => fadeObserver.observe(section));
+
+        // --- Time Chart ---
+        const ctx = document.getElementById('timeChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar', data: { labels: ['Proceso Manual', 'Proceso Automatizado'], datasets: [{ label: 'Minutos por caso', data: [120, 5], backgroundColor: ['rgba(239, 68, 68, 0.6)', 'rgba(20, 184, 166, 0.6)'], borderColor: ['#EF4444', '#14B8A6'], borderWidth: 2, borderRadius: 5, }] },
+            options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', scales: { x: { beginAtZero: true, title: { display: true, text: 'Tiempo en Minutos' } } }, plugins: { legend: { display: false } } }
+        });
+
+        // --- Interactive Demo Logic ---
+        const startDemoBtn = document.getElementById('start-demo-btn');
+        const flowItems = document.querySelectorAll('.flow-item');
+        const arrows = document.querySelectorAll('.flow-arrow');
+        startDemoBtn.addEventListener('click', () => {
+            let delay = 0;
+            flowItems.forEach(item => item.classList.remove('active'));
+            arrows.forEach(arrow => arrow.classList.remove('active'));
+            for (let i = 0; i < flowItems.length; i++) {
+                setTimeout(() => {
+                    flowItems[i].classList.add('active');
+                    if (i > 0) arrows[i-1].classList.add('active');
+                }, delay);
+                delay += 800;
+            }
+            setTimeout(() => {
+                 flowItems.forEach(item => item.classList.remove('active'));
+                 arrows.forEach(arrow => arrow.classList.remove('active'));
+            }, delay + 500);
+        });
+
+        // --- Case Simulation Data & Logic ---
+        const caseData = {
+            '1': {
+                title: 'Simulación: Conflicto Leve',
+                description: 'Dos estudiantes tienen una discusión verbal. Se activa únicamente la ruta de atención interna para mediación.',
+                internalProcess: [
+                    { icon: '🔢', title: 'Se genera Consecutivo Interno', text: 'El sistema asigna el número de remisión <strong>REM-2025-0123</strong>.' },
+                    { icon: '✍️', title: 'Se crea Carta de Remisión a Orientación', text: 'Un Google Doc se genera automáticamente con los detalles del caso y la política de contacto con acudiente.' },
+                    { icon: '🔗', title: 'Se genera PDF con Código QR', text: 'El documento se convierte en un PDF final, con un QR para verificar su autenticidad.' },
+                    { icon: '📧', title: 'Se envía Email de Notificación', text: 'Un correo con el PDF adjunto es enviado a <strong>Orientación</strong>, con copia a <strong>Coordinador de Sede</strong>, <strong>Rector</strong> y al <strong>Docente que reportó</strong>.' },
+                ],
+                externalProcess: []
+            },
+            '2': {
+                title: 'Simulación: Acoso Escolar (Ciberbullying)',
+                description: 'Se reporta intimidación repetitiva. El sistema activa tanto la ruta interna como la externa para entidades de protección.',
+                internalProcess: [
+                    { icon: '🔢', title: 'Se genera Consecutivo Interno', text: 'El sistema asigna el número de remisión <strong>REM-2025-0124</strong>.' },
+                    { icon: '📄', title: 'Se crea Carta de Remisión a Orientación', text: 'Se genera el documento formal interno para el seguimiento del caso.' },
+                    { icon: '🔗', title: 'Se genera PDF con Código QR', text: 'El documento interno se finaliza y se asegura con un QR.' },
+                    { icon: '📧', title: 'Se envía Email de Notificación', text: 'El equipo interno (Orientación, Coordinador, Rector, Docente) es notificado.' },
+                ],
+                externalProcess: [
+                    { icon: '🔢', title: 'Se genera Consecutivo Externo', text: 'El sistema asigna el número <strong>EXT-2025-0045</strong> para todas las cartas a entidades.' },
+                    { icon: '👮', title: 'Se crea borrador para Policía de Infancia', text: 'Se genera un Google Doc editable dirigido a la Policía, detallando la situación de ciberacoso y mencionando las evidencias.' },
+                    { icon: '👨‍⚖️', title: 'Se crea borrador para Comisaría de Familia', text: 'Se genera otro Google Doc para la Comisaría, solicitando acciones para el restablecimiento de derechos.' },
+                    { icon: '📬', title: 'Se envía Email Resumen a Orientación', text: 'Orientación recibe un único correo con los enlaces a <strong>todos los borradores</strong> para su revisión final antes de ser radicados.' },
+                ]
+            },
+            '3': {
+                title: 'Simulación: Presunto Consumo de SPA',
+                description: 'Un docente reporta sospecha de consumo. Se activan las rutas interna y externa, priorizando el sector salud.',
+                internalProcess: [
+                    { icon: '🔢', title: 'Se genera Consecutivo Interno', text: 'El sistema asigna el número de remisión <strong>REM-2025-0125</strong>.' },
+                    { icon: '📄', title: 'Se crea Carta de Remisión a Orientación', text: 'Se genera el documento confidencial interno, mencionando la activación de la ruta de salud.' },
+                    { icon: '🔗', title: 'Se genera PDF con Código QR', text: 'Se finaliza el documento interno para el archivo.' },
+                    { icon: '📧', title: 'Se envía Email de Notificación', text: 'El equipo directivo y de orientación es notificado de forma inmediata.' },
+                ],
+                externalProcess: [
+                    { icon: '🔢', title: 'Se genera Consecutivo Externo', text: 'Se asigna el número <strong>EXT-2025-0046</strong> para las cartas a entidades.' },
+                    { icon: '🏥', title: 'Se crea borrador para Sector Salud (EPS)', text: 'Se genera un Google Doc dirigido a la EPS del estudiante, solicitando valoración prioritaria.' },
+                    { icon: '👶', title: 'Se crea borrador para ICBF', text: 'Se genera un Google Doc para el ICBF, reportando la situación para garantizar la protección del menor.' },
+                    { icon: '📬', title: 'Se envía Email Resumen a Orientación', text: 'Orientación recibe un correo con enlaces a los borradores para su revisión y gestión con la familia.' },
+                ]
+            }
+        };
+
+        const modal = document.getElementById('case-modal');
+        const modalContent = modal.querySelector('.modal-content');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const caseCards = document.querySelectorAll('.case-card');
+
+        function createProcessStep(item) {
+            return `
+                <li class="flex items-start cascade-item relative">
+                    <div class="z-10 flex-shrink-0 bg-white h-10 w-10 rounded-full flex items-center justify-center text-xl shadow-md border">${item.icon}</div>
+                    <div class="ml-4">
+                        <p class="font-semibold text-slate-800">${item.title}</p>
+                        <p class="text-sm text-slate-600">${item.text}</p>
+                    </div>
+                </li>`;
+        }
+
+        function animateCascade(container) {
+            const items = container.querySelectorAll('.cascade-item');
+            items.forEach((item, index) => {
+                item.style.transitionDelay = `${index * 150}ms`;
+                item.classList.add('visible');
+            });
+        }
+
+        caseCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const caseId = card.dataset.case;
+                const data = caseData[caseId];
+
+                document.getElementById('modal-title').textContent = data.title;
+                document.getElementById('modal-description').textContent = data.description;
+                
+                const internalContainer = document.getElementById('internal-route-container');
+                const internalList = document.getElementById('modal-internal-route');
+                internalList.innerHTML = data.internalProcess.map(createProcessStep).join('');
+
+                const externalContainer = document.getElementById('external-route-container');
+                const externalList = document.getElementById('modal-external-route');
+                
+                if (data.externalProcess.length > 0) {
+                    externalContainer.style.display = 'block';
+                    externalList.innerHTML = data.externalProcess.map(createProcessStep).join('');
+                } else {
+                    externalContainer.style.display = 'none';
+                    externalList.innerHTML = '';
+                }
+
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    if (modal) {
+                       modal.classList.add('opacity-100');
+                    }
+                    modalContent.classList.remove('opacity-0', 'scale-90', '-translate-y-10');
+                    animateCascade(internalList);
+                    if (data.externalProcess.length > 0) {
+                        animateCascade(externalList);
+                    }
+                }, 10);
+            });
+        });
+
+        function hideModal() {
+            if (modal) {
+                modal.classList.remove('opacity-100');
+            }
+            modalContent.classList.add('opacity-0', 'scale-90', '-translate-y-10');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                // Reset cascade items for next open
+                modal.querySelectorAll('.cascade-item').forEach(item => {
+                    item.classList.remove('visible');
+                    item.style.transitionDelay = '0ms';
+                });
+            }, 400);
+        }
+
+        closeModalBtn.addEventListener('click', hideModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+    });
+    </script>
+</body>
+</html>
+
