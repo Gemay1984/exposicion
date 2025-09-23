@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Calm Harmony (Beige, Muted Teal, Dark Slate Gray) -->
-    <!-- Application Structure Plan: A comprehensive, single-page application structured to mirror a 2-hour workshop agenda. The user navigates through sections: Context, Demo, detailed Simulation, Impact, and Future. This sequential flow is intuitive. The key interaction is the enhanced simulation modal, which now visually splits the automated workflow into 'Internal' and 'External' routes, directly reflecting the provided Apps Script logic. This makes the system's decision-making process tangible for participants. -->
-    <!-- Visualization & Content Choices: 1. Context: Standard HTML/CSS infographic. 2. Demo: JS-animated sequence of the general data flow. 3. Simulation: A detailed modal uses a two-column layout to show parallel processes. 4. Dashboard: An embedded Looker Studio report for live data visualization. 5. Impact: Chart.js Bar Chart and HTML grids. -->
+    <!-- Application Structure Plan: A comprehensive, single-page application structured to mirror a 2-hour workshop agenda. The "Impact" section is now expanded to detail not just the time saved, but the pedagogical and human value of that recovered time. Key interactions include a link to an external video, an animated demo, and a simulation modal. -->
+    <!-- Visualization & Content Choices: 1. Video: Thumbnail link. 2. Strategic Value: Icon-based cards. 3. Context: Expanded section. 4. Demo: Includes tech stack. 5. Simulation: Detailed modal. 6. Future Projects: Two-column section. 7. Impact: Chart.js Bar Chart is now paired with a detailed explanation of the value of saved time. 8. Dashboard: Embedded Looker Studio. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
@@ -89,6 +89,37 @@
             opacity: 1;
             transform: translateX(0);
         }
+        .video-thumbnail-container {
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+        .video-thumbnail-container:hover .play-icon {
+            transform: translate(-50%, -50%) scale(1.1);
+            background-color: rgba(20, 184, 166, 0.9);
+        }
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background-color: rgba(20, 184, 166, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .play-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -96,10 +127,13 @@
     <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
             <h1 class="text-xl font-bold text-teal-600">Gestión de Convivencia 2.0</h1>
-            <div class="hidden md:flex items-center space-x-8">
+            <div class="hidden md:flex items-center space-x-2 lg:space-x-4 text-xs lg:text-sm">
+                <a href="#video" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Video</a>
+                <a href="#importancia" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Importancia</a>
                 <a href="#contexto" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Contexto</a>
                 <a href="#demo" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Demo</a>
                 <a href="#simulacion" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Simulación</a>
+                <a href="#futuro" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Futuro</a>
                 <a href="#impacto" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Impacto</a>
                 <a href="#dashboard" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Dashboard</a>
                 <a href="#cierre" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Cierre</a>
@@ -117,10 +151,53 @@
                 <p class="text-lg text-gray-200 max-w-3xl mx-auto">Una inmersión de 2 horas para explorar cómo la automatización nos permite ser más eficientes, transparentes y humanos.</p>
             </div>
         </section>
-        
-        <section id="institutional-banner" class="py-12 bg-slate-100">
+
+        <section id="institutional-banner" class="py-12 bg-slate-100 section-fade-in">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <img src="https://i.postimg.cc/VN6nHMHm/Imagen1.jpg" alt="Banner Institucional" class="w-full h-auto max-w-5xl mx-auto rounded-lg shadow-md" onerror="this.style.display='none'">
+                <img src="https://i.postimg.cc/VN6nHMHm/Imagen1.jpg" alt="Banner Institucional" class="w-full h-auto max-w-5xl mx-auto rounded-lg shadow-md" onerror="this.parentElement.parentElement.style.display='none'">
+            </div>
+        </section>
+        
+        <section id="video" class="py-20 section-fade-in bg-slate-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-slate-800">Video de Introducción</h3>
+                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Comencemos con una breve introducción que encapsula la esencia de nuestro proyecto y su impacto en la comunidad educativa.</p>
+                </div>
+                <div class="max-w-4xl mx-auto text-center">
+                    <a href="https://www.youtube.com/watch?v=i4xec6nzy0c&t=4s" target="_blank" class="video-thumbnail-container shadow-lg">
+                        <img src="https://img.youtube.com/vi/i4xec6nzy0c/maxresdefault.jpg" alt="Video Introductorio" class="w-full h-auto">
+                        <div class="play-icon">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="importancia" class="py-20 section-fade-in">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-slate-800">El Valor Estratégico de la Automatización</h3>
+                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Más allá de la eficiencia, la automatización es una herramienta de transformación que se alinea con los grandes marcos de gestión y desarrollo.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg text-center">
+                        <div class="text-4xl text-teal-500 mb-4">👨‍🏫</div>
+                        <h4 class="text-xl font-bold mb-2">Impacto Educativo</h4>
+                        <p class="text-gray-600">Al reducir la carga administrativa, los docentes recuperan tiempo valioso para la planeación pedagógica, el acompañamiento personalizado y la intervención oportuna, fortaleciendo el núcleo de la misión educativa.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-lg text-center">
+                        <div class="text-4xl text-teal-500 mb-4">🏛️</div>
+                        <h4 class="text-xl font-bold mb-2">Alineación con MIPG</h4>
+                        <p class="text-gray-600">Este proyecto responde directamente al Modelo Integrado de Planeación y Gestión (MIPG) al promover la eficiencia, la transparencia, la rendición de cuentas y la toma de decisiones basada en datos confiables y trazables.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-lg text-center">
+                        <div class="text-4xl text-teal-500 mb-4">🌍</div>
+                        <h4 class="text-xl font-bold mb-2">Aporte a los ODS</h4>
+                        <p class="text-gray-600">Contribuimos a los Objetivos de Desarrollo Sostenible (ODS): garantizando entornos de aprendizaje seguros (ODS 4: Educación de Calidad) y construyendo procesos institucionales más sólidos y transparentes (ODS 16: Paz, Justicia e Instituciones Sólidas).</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -128,8 +205,28 @@
             <section id="contexto" class="py-20 section-fade-in">
                 <div class="text-center mb-12">
                     <h3 class="text-3xl font-bold text-slate-800">El Punto de Partida: Contexto y Necesidad</h3>
-                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Basados en la <strong class="text-teal-600">Ley 1620/2013</strong>, enfrentábamos el desafío de gestionar situaciones complejas con herramientas análogas. El tiempo administrativo le restaba espacio a la intervención pedagógica.</p>
+                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">La decisión de innovar no fue una opción, sino una respuesta a una convergencia de necesidades urgentes que afectaban a toda nuestra comunidad educativa.</p>
                 </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h4 class="font-bold text-lg text-blue-600">1. Necesidad Normativa</h4>
+                        <p class="text-sm text-gray-600 mt-2">La Ley 1620/2013 nos exige tener rutas de atención claras y un sistema de registro y seguimiento riguroso. El método manual presentaba riesgos de incumplimiento y falta de evidencia sólida.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h4 class="font-bold text-lg text-blue-600">2. Necesidad Operativa</h4>
+                        <p class="text-sm text-gray-600 mt-2">El papeleo, la duplicación de formatos, la búsqueda en archivadores y la dificultad para comunicar a tiempo a todos los implicados hacían el proceso lento, ineficiente y propenso a errores.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h4 class="font-bold text-lg text-blue-600">3. Necesidad Humana</h4>
+                        <p class="text-sm text-gray-600 mt-2">Los docentes y directivos sufrían una sobrecarga administrativa que les restaba tiempo para su labor pedagógica y de acompañamiento. Los estudiantes y familias percibían demoras en la gestión.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <h4 class="font-bold text-lg text-blue-600">4. Necesidad Estratégica</h4>
+                        <p class="text-sm text-gray-600 mt-2">Sin datos centralizados y fáciles de analizar, era imposible identificar patrones, medir el impacto de las intervenciones y tomar decisiones estratégicas para mejorar el clima escolar de forma proactiva.</p>
+                    </div>
+                </div>
+
                 <div class="bg-white p-8 rounded-2xl shadow-lg grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                     <div class="border-r-0 md:border-r-2 border-dashed pr-0 md:pr-8">
                         <h4 class="text-2xl font-bold text-red-600 mb-6 text-center">❌ El Escenario Anterior</h4>
@@ -157,6 +254,18 @@
                     <h3 class="text-3xl font-bold text-slate-800">Demostración: Vea el Sistema en Acción</h3>
                     <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Así es como transformamos un reporte en un flujo de trabajo inteligente y automatizado. Presione "Iniciar Demostración" para ver la magia ocurrir paso a paso.</p>
                 </div>
+                
+                <div class="mb-16">
+                    <h4 class="text-2xl font-bold text-center text-slate-700 mb-8">Nuestro Ecosistema Tecnológico</h4>
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-6 text-center">
+                        <div class="bg-white p-4 rounded-lg shadow-sm"><p class="font-semibold">Google Forms</p><p class="text-xs text-gray-500">Captura de datos</p></div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm"><p class="font-semibold">Google Sheets</p><p class="text-xs text-gray-500">Base de datos central</p></div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm"><p class="font-semibold">Google Docs</p><p class="text-xs text-gray-500">Plantillas de documentos</p></div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm"><p class="font-semibold">Apps Script</p><p class="text-xs text-gray-500">El cerebro de la automatización</p></div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm col-span-2 lg:col-span-1"><p class="font-semibold">Looker Studio</p><p class="text-xs text-gray-500">Visualización de datos</p></div>
+                    </div>
+                </div>
+
                 <div class="bg-white p-8 rounded-2xl shadow-lg">
                     <div class="flex flex-col md:flex-row justify-around items-center gap-4 text-center mb-10">
                         <div id="flow-1" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200">
@@ -206,20 +315,86 @@
                     </div>
                 </div>
             </section>
+            
+            <section id="futuro" class="py-20 section-fade-in bg-slate-50 rounded-2xl">
+                <div class="text-center mb-12 px-4">
+                    <h3 class="text-3xl font-bold text-slate-800">Próximos Pasos: Nuestro Ecosistema en Expansión</h3>
+                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Este proyecto es solo el comienzo. Estamos comprometidos con la mejora continua y la innovación en otros procesos clave.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 px-6">
+                    <div>
+                        <h4 class="text-2xl font-bold text-center text-teal-600 mb-6">⚙️ En Desarrollo</h4>
+                        <div class="space-y-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                                <span class="text-3xl mr-4">🗣️</span>
+                                <div>
+                                    <h5 class="font-bold">Actas de Comunicación</h5>
+                                    <p class="text-sm text-gray-600">Automatización de actas de reunión y comunicados para acudientes, garantizando un registro claro y una comunicación fluida.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                                <span class="text-3xl mr-4">📝</span>
+                                <div>
+                                    <h5 class="font-bold">Gestión de PQRS</h5>
+                                    <p class="text-sm text-gray-600">Creación de un sistema centralizado para registrar, derivar y hacer seguimiento a las Peticiones, Quejas, Reclamos y Sugerencias.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                                <span class="text-3xl mr-4">🧭</span>
+                                <div>
+                                    <h5 class="font-bold">Expansión de Rutas de Atención</h5>
+                                    <p class="text-sm text-gray-600">Continuar refinando y añadiendo nuevas variables y protocolos al sistema actual para cubrir más escenarios de convivencia.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-2xl font-bold text-center text-blue-600 mb-6">💡 Próximos Proyectos</h4>
+                         <div class="space-y-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                                <span class="text-3xl mr-4">🧩</span>
+                                <div>
+                                    <h5 class="font-bold">Automatización de PIAR</h5>
+                                    <p class="text-sm text-gray-600">Digitalización y seguimiento de los Planes Individuales de Ajustes Razonables para estudiantes con necesidades educativas especiales.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                                <span class="text-3xl mr-4">📅</span>
+                                <div>
+                                    <h5 class="font-bold">Asistente de Plan de Aula</h5>
+                                    <p class="text-sm text-gray-600">Una herramienta que ayuda a los docentes a estructurar sus planes de aula de acuerdo con las mallas curriculares y estándares institucionales.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                                <span class="text-3xl mr-4">🤖</span>
+                                <div>
+                                    <h5 class="font-bold">Generador de Recursos Educativos</h5>
+                                    <p class="text-sm text-gray-600">Utilizando IA, crear una herramienta que genere actividades, talleres y evaluaciones contextualizadas a partir de los estándares y planes de aula.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <section id="impacto" class="py-20 section-fade-in">
                  <div class="text-center mb-12">
                     <h3 class="text-3xl font-bold text-slate-800">Impacto y Resultados Medibles</h3>
-                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">La automatización generó beneficios tangibles en eficiencia, organización y colaboración interinstitucional.</p>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-                    <div class="lg:col-span-3 bg-white p-8 rounded-2xl shadow-lg">
-                        <h4 class="text-xl font-bold text-center mb-4">Optimización del Tiempo de Gestión por Caso</h4>
-                        <div class="chart-container">
+                 </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg">
+                        <h4 class="text-xl font-bold text-center mb-4">Optimización del Tiempo de Gestión</h4>
+                        <div class="chart-container mb-8">
                             <canvas id="timeChart"></canvas>
                         </div>
+                        <h5 class="text-lg font-bold text-center text-teal-600 mb-4">¿Por qué es crucial ganar este tiempo?</h5>
+                        <ul class="space-y-4 text-sm">
+                            <li class="flex items-start"><span class="text-2xl mr-3">⏱️</span><div><strong class="text-gray-700">Intervención Oportuna:</strong> Permite actuar en minutos, no en horas, cuando un estudiante necesita apoyo, marcando la diferencia en situaciones críticas.</div></li>
+                            <li class="flex items-start"><span class="text-2xl mr-3">👨‍🏫</span><div><strong class="text-gray-700">Foco en lo Pedagógico:</strong> Libera a los docentes de la carga administrativa para que puedan dedicarse a lo que mejor saben hacer: enseñar, planificar y acompañar.</div></li>
+                            <li class="flex items-start"><span class="text-2xl mr-3">❤️</span><div><strong class="text-gray-700">Bienestar Docente:</strong> Un proceso claro, rápido y sin fricciones reduce significativamente el estrés y el agotamiento del personal.</div></li>
+                        </ul>
                     </div>
-                    <div class="lg:col-span-2 space-y-6">
+                    <div class="space-y-6">
                         <div class="bg-white p-6 rounded-2xl shadow-lg">
                             <h4 class="text-xl font-bold mb-4">Alianzas Estratégicas</h4>
                             <p class="text-gray-600 mb-4">El sistema facilita la articulación y envío de reportes a entidades clave:</p>
@@ -233,9 +408,10 @@
                         <div class="bg-white p-6 rounded-2xl shadow-lg">
                             <h4 class="text-xl font-bold mb-4">Resultados Cualitativos</h4>
                              <ul class="space-y-3 list-inside text-gray-700">
-                                <li><span class="font-bold text-teal-600">Claridad:</span> Flujos de responsabilidad definidos.</li>
-                                <li><span class="font-bold text-teal-600">Seguridad:</span> Evidencias digitales y organizadas.</li>
-                                <li><span class="font-bold text-teal-600">Confianza:</span> Comunicación transparente con acudientes.</li>
+                                <li><span class="font-bold text-teal-600">Claridad:</span> Flujos de responsabilidad definidos para todos.</li>
+                                <li><span class="font-bold text-teal-600">Seguridad:</span> Evidencias digitales organizadas y disponibles al instante.</li>
+                                <li><span class="font-bold text-teal-600">Confianza:</span> Comunicación transparente y proactiva con los acudientes.</li>
+                                <li><span class="font-bold text-teal-600">Trazabilidad:</span> Cada paso del proceso queda registrado, garantizando la rendición de cuentas.</li>
                             </ul>
                         </div>
                     </div>
@@ -342,7 +518,7 @@
                     observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.15 });
+        }, { threshold: 0.1 });
         document.querySelectorAll('.section-fade-in').forEach(section => fadeObserver.observe(section));
 
         // --- Time Chart ---
@@ -508,4 +684,3 @@
     </script>
 </body>
 </html>
-
