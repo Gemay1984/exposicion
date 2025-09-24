@@ -10,14 +10,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Calm Harmony (Beige, Muted Teal, Dark Slate Gray) -->
-    <!-- Application Structure Plan: A comprehensive, single-page application structured to mirror a 2-hour workshop agenda. The "Impact" section is now expanded to detail not just the time saved, but the pedagogical and human value of that recovered time. Key interactions include a link to an external video, an animated demo, and a simulation modal. -->
-    <!-- Visualization & Content Choices: 1. Video: Thumbnail link. 2. Strategic Value: Icon-based cards. 3. Context: Expanded section. 4. Demo: Includes tech stack. 5. Simulation: Detailed modal. 6. Future Projects: Two-column section. 7. Impact: Chart.js Bar Chart is now paired with a detailed explanation of the value of saved time. 8. Dashboard: Embedded Looker Studio. -->
+    <!-- Application Structure Plan: A comprehensive, single-page application structured to mirror a 2-hour workshop agenda. A dark mode toggle has been added for accessibility and user preference. The "Impact" section has been moved to immediately follow the "Context" section to create a strong problem-solution narrative early on. Key interactions include a video link, an animated demo, and a simulation modal. -->
+    <!-- Visualization & Content Choices: 1. Video: Thumbnail link. 2. Strategic Value: Icon-based cards. 3. Context: Expanded section. 4. Impact: Chart.js Bar Chart with dark mode support. 5. Demo: Includes tech stack. 6. Simulation: Detailed modal. 7. Dashboard: Embedded Looker Studio. 8. Future Projects: Two-column section. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F8F9FA;
-            color: #34495E;
+            transition: background-color 0.3s, color 0.3s;
         }
         .chart-container {
             position: relative;
@@ -52,6 +51,9 @@
         .case-card:hover {
             transform: translateY(-8px) scale(1.03);
             box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        html.dark .case-card:hover {
+            box-shadow: 0 20px 25px -5px rgb(255 255 255 / 0.1), 0 8px 10px -6px rgb(255 255 255 / 0.1);
         }
         .modal-backdrop {
             transition: opacity 0.3s ease;
@@ -121,23 +123,32 @@
             margin-left: 5px;
         }
     </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
 </head>
-<body class="antialiased">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200">
 
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+    <header class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-            <h1 class="text-xl font-bold text-teal-600">Gestión de Convivencia 2.0</h1>
+            <h1 class="text-xl font-bold text-teal-600 dark:text-teal-400">Gestión de Convivencia 2.0</h1>
             <div class="hidden md:flex items-center space-x-2 lg:space-x-4 text-xs lg:text-sm">
-                <a href="#video" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Video</a>
-                <a href="#importancia" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Importancia</a>
-                <a href="#contexto" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Contexto</a>
-                <a href="#demo" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Demo</a>
-                <a href="#simulacion" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Simulación</a>
-                <a href="#futuro" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Futuro</a>
-                <a href="#impacto" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Impacto</a>
-                <a href="#dashboard" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Dashboard</a>
-                <a href="#cierre" class="nav-link text-gray-600 hover:text-teal-600 font-medium">Cierre</a>
+                <a href="#video" class="nav-link text-gray-600 dark:text-gray-300 hover:text-teal-500">Video</a>
+                <a href="#importancia" class="nav-link text-gray-600 dark:text-gray-300 hover:text-teal-500">Importancia</a>
+                <a href="#contexto" class="nav-link text-gray-600 dark:text-gray-300 hover:text-teal-500">Contexto</a>
+                <a href="#impacto" class="nav-link text-gray-600 dark:text-gray-300 hover:text-teal-500">Impacto</a>
+                <a href="#demo" class="nav-link text-gray-600 dark:text-gray-300 hover:text-teal-500">Demo</a>
+                <a href="#simulacion" class="nav-link text-gray-600 dark:text-gray-300 hover:text-teal-500">Simulación</a>
+                <a href="#dashboard" class="nav-link text-gray-600 dark:text-gray-300 hover:text-teal-500">Dashboard</a>
+                <a href="#futuro" class="nav-link text-gray-600 dark:text-gray-300 hover:text-teal-500">Futuro</a>
+                <a href="#cierre" class="nav-link text-gray-600 dark:text-gray-300 hover:text-teal-500">Cierre</a>
             </div>
+            <button id="theme-toggle" class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <svg id="theme-toggle-dark-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                <svg id="theme-toggle-light-icon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+            </button>
         </nav>
     </header>
 
@@ -152,17 +163,17 @@
             </div>
         </section>
 
-        <section id="institutional-banner" class="py-12 bg-slate-100 section-fade-in">
+        <section id="institutional-banner" class="py-12 bg-slate-100 dark:bg-slate-800 section-fade-in">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <img src="https://i.postimg.cc/VN6nHMHm/Imagen1.jpg" alt="Banner Institucional" class="w-full h-auto max-w-5xl mx-auto rounded-lg shadow-md" onerror="this.parentElement.parentElement.style.display='none'">
             </div>
         </section>
         
-        <section id="video" class="py-20 section-fade-in bg-slate-50">
+        <section id="video" class="py-20 section-fade-in bg-slate-50 dark:bg-slate-900/50">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h3 class="text-3xl font-bold text-slate-800">Video de Introducción</h3>
-                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Comencemos con una breve introducción que encapsula la esencia de nuestro proyecto y su impacto en la comunidad educativa.</p>
+                    <h3 class="text-3xl font-bold">Video de Introducción</h3>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">Comencemos con una breve introducción que encapsula la esencia de nuestro proyecto y su impacto en la comunidad educativa.</p>
                 </div>
                 <div class="max-w-4xl mx-auto text-center">
                     <a href="https://www.youtube.com/watch?v=i4xec6nzy0c&t=4s" target="_blank" class="video-thumbnail-container shadow-lg">
@@ -178,24 +189,24 @@
         <section id="importancia" class="py-20 section-fade-in">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h3 class="text-3xl font-bold text-slate-800">El Valor Estratégico de la Automatización</h3>
-                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Más allá de la eficiencia, la automatización es una herramienta de transformación que se alinea con los grandes marcos de gestión y desarrollo.</p>
+                    <h3 class="text-3xl font-bold">El Valor Estratégico de la Automatización</h3>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">Más allá de la eficiencia, la automatización es una herramienta de transformación que se alinea con los grandes marcos de gestión y desarrollo.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="bg-white p-8 rounded-2xl shadow-lg text-center">
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg text-center">
                         <div class="text-4xl text-teal-500 mb-4">👨‍🏫</div>
                         <h4 class="text-xl font-bold mb-2">Impacto Educativo</h4>
-                        <p class="text-gray-600">Al reducir la carga administrativa, los docentes recuperan tiempo valioso para la planeación pedagógica, el acompañamiento personalizado y la intervención oportuna, fortaleciendo el núcleo de la misión educativa.</p>
+                        <p class="text-gray-600 dark:text-gray-400">Al reducir la carga administrativa, los docentes recuperan tiempo valioso para la planeación pedagógica, el acompañamiento personalizado y la intervención oportuna, fortaleciendo el núcleo de la misión educativa.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-2xl shadow-lg text-center">
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg text-center">
                         <div class="text-4xl text-teal-500 mb-4">🏛️</div>
                         <h4 class="text-xl font-bold mb-2">Alineación con MIPG</h4>
-                        <p class="text-gray-600">Este proyecto responde directamente al Modelo Integrado de Planeación y Gestión (MIPG) al promover la eficiencia, la transparencia, la rendición de cuentas y la toma de decisiones basada en datos confiables y trazables.</p>
+                        <p class="text-gray-600 dark:text-gray-400">Este proyecto responde directamente al Modelo Integrado de Planeación y Gestión (MIPG) al promover la eficiencia, la transparencia, la rendición de cuentas y la toma de decisiones basada en datos confiables y trazables.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-2xl shadow-lg text-center">
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg text-center">
                         <div class="text-4xl text-teal-500 mb-4">🌍</div>
                         <h4 class="text-xl font-bold mb-2">Aporte a los ODS</h4>
-                        <p class="text-gray-600">Contribuimos a los Objetivos de Desarrollo Sostenible (ODS): garantizando entornos de aprendizaje seguros (ODS 4: Educación de Calidad) y construyendo procesos institucionales más sólidos y transparentes (ODS 16: Paz, Justicia e Instituciones Sólidas).</p>
+                        <p class="text-gray-600 dark:text-gray-400">Contribuimos a los Objetivos de Desarrollo Sostenible (ODS): garantizando entornos de aprendizaje seguros (ODS 4: Educación de Calidad) y construyendo procesos institucionales más sólidos y transparentes (ODS 16: Paz, Justicia e Instituciones Sólidas).</p>
                     </div>
                 </div>
             </div>
@@ -204,33 +215,33 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <section id="contexto" class="py-20 section-fade-in">
                 <div class="text-center mb-12">
-                    <h3 class="text-3xl font-bold text-slate-800">El Punto de Partida: Contexto y Necesidad</h3>
-                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">La decisión de innovar no fue una opción, sino una respuesta a una convergencia de necesidades urgentes que afectaban a toda nuestra comunidad educativa.</p>
+                    <h3 class="text-3xl font-bold">El Punto de Partida: Contexto y Necesidad</h3>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">La decisión de innovar no fue una opción, sino una respuesta a una convergencia de necesidades urgentes que afectaban a toda nuestra comunidad educativa.</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-                    <div class="bg-white p-6 rounded-xl shadow">
-                        <h4 class="font-bold text-lg text-blue-600">1. Necesidad Normativa</h4>
-                        <p class="text-sm text-gray-600 mt-2">La Ley 1620/2013 nos exige tener rutas de atención claras y un sistema de registro y seguimiento riguroso. El método manual presentaba riesgos de incumplimiento y falta de evidencia sólida.</p>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow">
+                        <h4 class="font-bold text-lg text-blue-600 dark:text-blue-400">1. Necesidad Normativa</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">La Ley 1620/2013 nos exige tener rutas de atención claras y un sistema de registro y seguimiento riguroso. El método manual presentaba riesgos de incumplimiento y falta de evidencia sólida.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl shadow">
-                        <h4 class="font-bold text-lg text-blue-600">2. Necesidad Operativa</h4>
-                        <p class="text-sm text-gray-600 mt-2">El papeleo, la duplicación de formatos, la búsqueda en archivadores y la dificultad para comunicar a tiempo a todos los implicados hacían el proceso lento, ineficiente y propenso a errores.</p>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow">
+                        <h4 class="font-bold text-lg text-blue-600 dark:text-blue-400">2. Necesidad Operativa</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">El papeleo, la duplicación de formatos, la búsqueda en archivadores y la dificultad para comunicar a tiempo a todos los implicados hacían el proceso lento, ineficiente y propenso a errores.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl shadow">
-                        <h4 class="font-bold text-lg text-blue-600">3. Necesidad Humana</h4>
-                        <p class="text-sm text-gray-600 mt-2">Los docentes y directivos sufrían una sobrecarga administrativa que les restaba tiempo para su labor pedagógica y de acompañamiento. Los estudiantes y familias percibían demoras en la gestión.</p>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow">
+                        <h4 class="font-bold text-lg text-blue-600 dark:text-blue-400">3. Necesidad Humana</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Los docentes y directivos sufrían una sobrecarga administrativa que les restaba tiempo para su labor pedagógica y de acompañamiento. Los estudiantes y familias percibían demoras en la gestión.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-xl shadow">
-                        <h4 class="font-bold text-lg text-blue-600">4. Necesidad Estratégica</h4>
-                        <p class="text-sm text-gray-600 mt-2">Sin datos centralizados y fáciles de analizar, era imposible identificar patrones, medir el impacto de las intervenciones y tomar decisiones estratégicas para mejorar el clima escolar de forma proactiva.</p>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow">
+                        <h4 class="font-bold text-lg text-blue-600 dark:text-blue-400">4. Necesidad Estratégica</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Sin datos centralizados y fáciles de analizar, era imposible identificar patrones, medir el impacto de las intervenciones y tomar decisiones estratégicas para mejorar el clima escolar de forma proactiva.</p>
                     </div>
                 </div>
 
-                <div class="bg-white p-8 rounded-2xl shadow-lg grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div class="border-r-0 md:border-r-2 border-dashed pr-0 md:pr-8">
-                        <h4 class="text-2xl font-bold text-red-600 mb-6 text-center">❌ El Escenario Anterior</h4>
-                        <ul class="space-y-4 text-gray-700">
+                <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="border-r-0 md:border-r-2 border-dashed pr-0 md:pr-8 border-gray-200 dark:border-gray-700">
+                        <h4 class="text-2xl font-bold text-red-600 dark:text-red-400 mb-6 text-center">❌ El Escenario Anterior</h4>
+                        <ul class="space-y-4 text-gray-700 dark:text-gray-300">
                             <li class="flex"><span class="mr-3 mt-1 text-lg">📂</span>Actas en papel, archivadores físicos.</li>
                             <li class="flex"><span class="mr-3 mt-1 text-lg">⏳</span>Procesos manuales lentos y duplicación de esfuerzos.</li>
                             <li class="flex"><span class="mr-3 mt-1 text-lg">❓</span>Falta de trazabilidad y seguimiento claro de los casos.</li>
@@ -238,8 +249,8 @@
                         </ul>
                     </div>
                     <div class="mt-8 md:mt-0">
-                        <h4 class="text-2xl font-bold text-green-600 mb-6 text-center">✅ La Visión de Futuro</h4>
-                        <ul class="space-y-4 text-gray-700">
+                        <h4 class="text-2xl font-bold text-green-600 dark:text-green-400 mb-6 text-center">✅ La Visión de Futuro</h4>
+                        <ul class="space-y-4 text-gray-700 dark:text-gray-300">
                             <li class="flex"><span class="mr-3 mt-1 text-lg">⚡️</span>Agilidad: de horas a minutos en el registro y comunicación.</li>
                             <li class="flex"><span class="mr-3 mt-1 text-lg">🔍</span>Transparencia y evidencias organizadas en la nube.</li>
                             <li class="flex"><span class="mr-3 mt-1 text-lg">🤝</span>Claridad en el flujo de responsabilidades y articulación.</li>
@@ -249,38 +260,79 @@
                 </div>
             </section>
 
+            <section id="impacto" class="py-20 section-fade-in">
+                 <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold">Impacto y Resultados Medibles</h3>
+                 </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg">
+                        <h4 class="text-xl font-bold text-center mb-4">Optimización del Tiempo de Gestión</h4>
+                        <div class="chart-container mb-8">
+                            <canvas id="timeChart"></canvas>
+                        </div>
+                        <h5 class="text-lg font-bold text-center text-teal-600 dark:text-teal-400 mb-4">¿Por qué es crucial ganar este tiempo?</h5>
+                        <ul class="space-y-4 text-sm text-gray-600 dark:text-gray-400">
+                            <li class="flex items-start"><span class="text-2xl mr-3">⏱️</span><div><strong class="text-slate-700 dark:text-slate-200">Intervención Oportuna:</strong> Permite actuar en minutos, no en horas, cuando un estudiante necesita apoyo, marcando la diferencia en situaciones críticas.</div></li>
+                            <li class="flex items-start"><span class="text-2xl mr-3">👨‍🏫</span><div><strong class="text-slate-700 dark:text-slate-200">Foco en lo Pedagógico:</strong> Libera a los docentes de la carga administrativa para que puedan dedicarse a lo que mejor saben hacer: enseñar, planificar y acompañar.</div></li>
+                            <li class="flex items-start"><span class="text-2xl mr-3">❤️</span><div><strong class="text-slate-700 dark:text-slate-200">Bienestar Docente:</strong> Un proceso claro, rápido y sin fricciones reduce significativamente el estrés y el agotamiento del personal.</div></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg">
+                            <h4 class="text-xl font-bold mb-4">Alianzas Estratégicas</h4>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">El sistema facilita la articulación y envío de reportes a entidades clave:</p>
+                            <div class="grid grid-cols-2 gap-4 text-center font-medium text-slate-700 dark:text-slate-200">
+                                <div class="bg-slate-100 dark:bg-slate-700 p-3 rounded-lg">ICBF</div>
+                                <div class="bg-slate-100 dark:bg-slate-700 p-3 rounded-lg">Policía de Infancia</div>
+                                <div class="bg-slate-100 dark:bg-slate-700 p-3 rounded-lg">Secretaría de Educación</div>
+                                <div class="bg-slate-100 dark:bg-slate-700 p-3 rounded-lg">Comisaría de Familia</div>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg">
+                            <h4 class="text-xl font-bold mb-4">Resultados Cualitativos</h4>
+                             <ul class="space-y-3 list-inside text-gray-600 dark:text-gray-400">
+                                <li><span class="font-bold text-teal-600 dark:text-teal-400">Claridad:</span> Flujos de responsabilidad definidos para todos.</li>
+                                <li><span class="font-bold text-teal-600 dark:text-teal-400">Seguridad:</span> Evidencias digitales organizadas y disponibles al instante.</li>
+                                <li><span class="font-bold text-teal-600 dark:text-teal-400">Confianza:</span> Comunicación transparente y proactiva con los acudientes.</li>
+                                <li><span class="font-bold text-teal-600 dark:text-teal-400">Trazabilidad:</span> Cada paso del proceso queda registrado, garantizando la rendición de cuentas.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
             <section id="demo" class="py-20 section-fade-in">
                 <div class="text-center mb-12">
-                    <h3 class="text-3xl font-bold text-slate-800">Demostración: Vea el Sistema en Acción</h3>
-                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Así es como transformamos un reporte en un flujo de trabajo inteligente y automatizado. Presione "Iniciar Demostración" para ver la magia ocurrir paso a paso.</p>
+                    <h3 class="text-3xl font-bold">Demostración: Vea el Sistema en Acción</h3>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">Así es como transformamos un reporte en un flujo de trabajo inteligente y automatizado. Presione "Iniciar Demostración" para ver la magia ocurrir paso a paso.</p>
                 </div>
                 
                 <div class="mb-16">
-                    <h4 class="text-2xl font-bold text-center text-slate-700 mb-8">Nuestro Ecosistema Tecnológico</h4>
+                    <h4 class="text-2xl font-bold text-center mb-8">Nuestro Ecosistema Tecnológico</h4>
                     <div class="grid grid-cols-2 lg:grid-cols-5 gap-6 text-center">
-                        <div class="bg-white p-4 rounded-lg shadow-sm"><p class="font-semibold">Google Forms</p><p class="text-xs text-gray-500">Captura de datos</p></div>
-                        <div class="bg-white p-4 rounded-lg shadow-sm"><p class="font-semibold">Google Sheets</p><p class="text-xs text-gray-500">Base de datos central</p></div>
-                        <div class="bg-white p-4 rounded-lg shadow-sm"><p class="font-semibold">Google Docs</p><p class="text-xs text-gray-500">Plantillas de documentos</p></div>
-                        <div class="bg-white p-4 rounded-lg shadow-sm"><p class="font-semibold">Apps Script</p><p class="text-xs text-gray-500">El cerebro de la automatización</p></div>
-                        <div class="bg-white p-4 rounded-lg shadow-sm col-span-2 lg:col-span-1"><p class="font-semibold">Looker Studio</p><p class="text-xs text-gray-500">Visualización de datos</p></div>
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm"><p class="font-semibold">Google Forms</p><p class="text-xs text-gray-500 dark:text-gray-400">Captura de datos</p></div>
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm"><p class="font-semibold">Google Sheets</p><p class="text-xs text-gray-500 dark:text-gray-400">Base de datos central</p></div>
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm"><p class="font-semibold">Google Docs</p><p class="text-xs text-gray-500 dark:text-gray-400">Plantillas de documentos</p></div>
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm"><p class="font-semibold">Apps Script</p><p class="text-xs text-gray-500 dark:text-gray-400">El cerebro de la automatización</p></div>
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm col-span-2 lg:col-span-1"><p class="font-semibold">Looker Studio</p><p class="text-xs text-gray-500 dark:text-gray-400">Visualización de datos</p></div>
                     </div>
                 </div>
 
-                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-lg">
                     <div class="flex flex-col md:flex-row justify-around items-center gap-4 text-center mb-10">
-                        <div id="flow-1" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200">
+                        <div id="flow-1" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200 dark:border-slate-700">
                             <div class="text-4xl flow-icon transition-transform duration-500">📝</div><p class="font-semibold mt-2">Formulario</p>
                         </div>
-                        <div id="arrow-1" class="flow-arrow text-4xl text-slate-400">➡️</div>
-                        <div id="flow-2" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200">
+                        <div id="arrow-1" class="flow-arrow text-4xl text-slate-400 dark:text-slate-500">➡️</div>
+                        <div id="flow-2" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200 dark:border-slate-700">
                             <div class="text-4xl flow-icon transition-transform duration-500">📈</div><p class="font-semibold mt-2">Base de Datos</p>
                         </div>
-                        <div id="arrow-2" class="flow-arrow text-4xl text-slate-400">➡️</div>
-                        <div id="flow-3" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200">
+                        <div id="arrow-2" class="flow-arrow text-4xl text-slate-400 dark:text-slate-500">➡️</div>
+                        <div id="flow-3" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200 dark:border-slate-700">
                             <div class="text-4xl flow-icon transition-transform duration-500">📄</div><p class="font-semibold mt-2">PDF + QR</p>
                         </div>
-                        <div id="arrow-3" class="flow-arrow text-4xl text-slate-400">➡️</div>
-                        <div id="flow-4" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200">
+                        <div id="arrow-3" class="flow-arrow text-4xl text-slate-400 dark:text-slate-500">➡️</div>
+                        <div id="flow-4" class="flow-item p-4 rounded-full w-40 h-40 flex flex-col justify-center items-center border-2 border-slate-200 dark:border-slate-700">
                             <div class="text-4xl flow-icon transition-transform duration-500">📧</div><p class="font-semibold mt-2">Notificaciones</p>
                         </div>
                     </div>
@@ -294,133 +346,92 @@
 
             <section id="simulacion" class="py-20 section-fade-in">
                 <div class="text-center mb-12">
-                    <h3 class="text-3xl font-bold text-slate-800">Simulación de Rutas de Atención</h3>
-                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Ahora es su turno. Seleccione uno de los casos ficticios para ver la ruta de atención completa que el sistema activaría automáticamente, diferenciando el flujo interno del externo.</p>
+                    <h3 class="text-3xl font-bold">Simulación de Rutas de Atención</h3>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">Ahora es su turno. Seleccione uno de los casos ficticios para ver la ruta de atención completa que el sistema activaría automáticamente, diferenciando el flujo interno del externo.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="case-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer" data-case="1">
-                        <h4 class="font-bold text-xl text-yellow-600">Caso 1: Conflicto Leve</h4>
-                        <p class="text-gray-600 mt-2">Dos estudiantes de 7° tienen una discusión verbal en el patio. No hay agresión física.</p>
-                        <button class="mt-4 text-teal-600 font-semibold">Iniciar Simulación →</button>
+                    <div class="case-card bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg cursor-pointer" data-case="1">
+                        <h4 class="font-bold text-xl text-yellow-600 dark:text-yellow-400">Caso 1: Conflicto Leve</h4>
+                        <p class="text-gray-600 dark:text-gray-400 mt-2">Dos estudiantes de 7° tienen una discusión verbal en el patio. No hay agresión física.</p>
+                        <button class="mt-4 text-teal-600 dark:text-teal-400 font-semibold">Iniciar Simulación →</button>
                     </div>
-                    <div class="case-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer" data-case="2">
-                        <h4 class="font-bold text-xl text-orange-600">Caso 2: Acoso Escolar</h4>
-                        <p class="text-gray-600 mt-2">Un estudiante de 9° reporta ser intimidado repetitivamente por un compañero a través de redes sociales.</p>
-                         <button class="mt-4 text-teal-600 font-semibold">Iniciar Simulación →</button>
+                    <div class="case-card bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg cursor-pointer" data-case="2">
+                        <h4 class="font-bold text-xl text-orange-600 dark:text-orange-400">Caso 2: Acoso Escolar</h4>
+                        <p class="text-gray-600 dark:text-gray-400 mt-2">Un estudiante de 9° reporta ser intimidado repetitivamente por un compañero a través de redes sociales.</p>
+                         <button class="mt-4 text-teal-600 dark:text-teal-400 font-semibold">Iniciar Simulación →</button>
                     </div>
-                    <div class="case-card bg-white p-6 rounded-2xl shadow-lg cursor-pointer" data-case="3">
-                        <h4 class="font-bold text-xl text-red-600">Caso 3: Presunto Consumo de SPA</h4>
-                        <p class="text-gray-600 mt-2">Un docente reporta un comportamiento inusual y posible olor a marihuana en un estudiante de 11°.</p>
-                         <button class="mt-4 text-teal-600 font-semibold">Iniciar Simulación →</button>
-                    </div>
-                </div>
-            </section>
-            
-            <section id="impacto" class="py-20 section-fade-in">
-                 <div class="text-center mb-12">
-                    <h3 class="text-3xl font-bold text-slate-800">Impacto y Resultados Medibles</h3>
-                 </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    <div class="bg-white p-8 rounded-2xl shadow-lg">
-                        <h4 class="text-xl font-bold text-center mb-4">Optimización del Tiempo de Gestión</h4>
-                        <div class="chart-container mb-8">
-                            <canvas id="timeChart"></canvas>
-                        </div>
-                        <h5 class="text-lg font-bold text-center text-teal-600 mb-4">¿Por qué es crucial ganar este tiempo?</h5>
-                        <ul class="space-y-4 text-sm">
-                            <li class="flex items-start"><span class="text-2xl mr-3">⏱️</span><div><strong class="text-gray-700">Intervención Oportuna:</strong> Permite actuar en minutos, no en horas, cuando un estudiante necesita apoyo, marcando la diferencia en situaciones críticas.</div></li>
-                            <li class="flex items-start"><span class="text-2xl mr-3">👨‍🏫</span><div><strong class="text-gray-700">Foco en lo Pedagógico:</strong> Libera a los docentes de la carga administrativa para que puedan dedicarse a lo que mejor saben hacer: enseñar, planificar y acompañar.</div></li>
-                            <li class="flex items-start"><span class="text-2xl mr-3">❤️</span><div><strong class="text-gray-700">Bienestar Docente:</strong> Un proceso claro, rápido y sin fricciones reduce significativamente el estrés y el agotamiento del personal.</div></li>
-                        </ul>
-                    </div>
-                    <div class="space-y-6">
-                        <div class="bg-white p-6 rounded-2xl shadow-lg">
-                            <h4 class="text-xl font-bold mb-4">Alianzas Estratégicas</h4>
-                            <p class="text-gray-600 mb-4">El sistema facilita la articulación y envío de reportes a entidades clave:</p>
-                            <div class="grid grid-cols-2 gap-4 text-center font-medium text-gray-700">
-                                <div class="bg-slate-100 p-3 rounded-lg">ICBF</div>
-                                <div class="bg-slate-100 p-3 rounded-lg">Policía de Infancia</div>
-                                <div class="bg-slate-100 p-3 rounded-lg">Secretaría de Educación</div>
-                                <div class="bg-slate-100 p-3 rounded-lg">Comisaría de Familia</div>
-                            </div>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-lg">
-                            <h4 class="text-xl font-bold mb-4">Resultados Cualitativos</h4>
-                             <ul class="space-y-3 list-inside text-gray-700">
-                                <li><span class="font-bold text-teal-600">Claridad:</span> Flujos de responsabilidad definidos para todos.</li>
-                                <li><span class="font-bold text-teal-600">Seguridad:</span> Evidencias digitales organizadas y disponibles al instante.</li>
-                                <li><span class="font-bold text-teal-600">Confianza:</span> Comunicación transparente y proactiva con los acudientes.</li>
-                                <li><span class="font-bold text-teal-600">Trazabilidad:</span> Cada paso del proceso queda registrado, garantizando la rendición de cuentas.</li>
-                            </ul>
-                        </div>
+                    <div class="case-card bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg cursor-pointer" data-case="3">
+                        <h4 class="font-bold text-xl text-red-600 dark:text-red-400">Caso 3: Presunto Consumo de SPA</h4>
+                        <p class="text-gray-600 dark:text-gray-400 mt-2">Un docente reporta un comportamiento inusual y posible olor a marihuana en un estudiante de 11°.</p>
+                         <button class="mt-4 text-teal-600 dark:text-teal-400 font-semibold">Iniciar Simulación →</button>
                     </div>
                 </div>
             </section>
             
             <section id="dashboard" class="py-20 section-fade-in">
                 <div class="text-center mb-12">
-                    <h3 class="text-3xl font-bold text-slate-800">Dashboard de Seguimiento en Vivo</h3>
-                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Este es un ejemplo en tiempo real de cómo se visualizan los datos recopilados, permitiendo un análisis de tendencias y una toma de decisiones informada.</p>
+                    <h3 class="text-3xl font-bold">Dashboard de Seguimiento en Vivo</h3>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">Este es un ejemplo en tiempo real de cómo se visualizan los datos recopilados, permitiendo un análisis de tendencias y una toma de decisiones informada.</p>
                 </div>
-                <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-lg">
-                    <iframe width="100%" height="800" src="https://lookerstudio.google.com/embed/reporting/615595e9-2d29-46f8-be77-4b696884efb1/page/N0MdE" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+                <div class="bg-white dark:bg-slate-800 p-4 sm:p-8 rounded-2xl shadow-lg">
+                    <iframe id="looker-dashboard" width="100%" height="800" src="https://lookerstudio.google.com/embed/reporting/615595e9-2d29-46f8-be77-4b696884efb1/page/N0MdE" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
                 </div>
             </section>
             
-            <section id="futuro" class="py-20 section-fade-in bg-slate-50 rounded-2xl">
+            <section id="futuro" class="py-20 section-fade-in bg-slate-50 dark:bg-slate-900/50 rounded-2xl">
                 <div class="text-center mb-12 px-4">
-                    <h3 class="text-3xl font-bold text-slate-800">Próximos Pasos: Nuestro Ecosistema en Expansión</h3>
-                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Este proyecto es solo el comienzo. Estamos comprometidos con la mejora continua y la innovación en otros procesos clave.</p>
+                    <h3 class="text-3xl font-bold">Próximos Pasos: Nuestro Ecosistema en Expansión</h3>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">Este proyecto es solo el comienzo. Estamos comprometidos con la mejora continua y la innovación en otros procesos clave.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10 px-6">
                     <div>
-                        <h4 class="text-2xl font-bold text-center text-teal-600 mb-6">⚙️ En Desarrollo</h4>
+                        <h4 class="text-2xl font-bold text-center text-teal-600 dark:text-teal-400 mb-6">⚙️ En Desarrollo</h4>
                         <div class="space-y-6">
-                            <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md flex items-start">
                                 <span class="text-3xl mr-4">🗣️</span>
                                 <div>
                                     <h5 class="font-bold">Actas de Comunicación</h5>
-                                    <p class="text-sm text-gray-600">Automatización de actas de reunión y comunicados para acudientes, garantizando un registro claro y una comunicación fluida.</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Automatización de actas de reunión y comunicados para acudientes, garantizando un registro claro y una comunicación fluida.</p>
                                 </div>
                             </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md flex items-start">
                                 <span class="text-3xl mr-4">📝</span>
                                 <div>
                                     <h5 class="font-bold">Gestión de PQRS</h5>
-                                    <p class="text-sm text-gray-600">Creación de un sistema centralizado para registrar, derivar y hacer seguimiento a las Peticiones, Quejas, Reclamos y Sugerencias.</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Creación de un sistema centralizado para registrar, derivar y hacer seguimiento a las Peticiones, Quejas, Reclamos y Sugerencias.</p>
                                 </div>
                             </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md flex items-start">
                                 <span class="text-3xl mr-4">🧭</span>
                                 <div>
                                     <h5 class="font-bold">Expansión de Rutas de Atención</h5>
-                                    <p class="text-sm text-gray-600">Continuar refinando y añadiendo nuevas variables y protocolos al sistema actual para cubrir más escenarios de convivencia.</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Continuar refinando y añadiendo nuevas variables y protocolos al sistema actual para cubrir más escenarios de convivencia.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <h4 class="text-2xl font-bold text-center text-blue-600 mb-6">💡 Próximos Proyectos</h4>
+                        <h4 class="text-2xl font-bold text-center text-blue-600 dark:text-blue-400 mb-6">💡 Próximos Proyectos</h4>
                          <div class="space-y-6">
-                            <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md flex items-start">
                                 <span class="text-3xl mr-4">🧩</span>
                                 <div>
                                     <h5 class="font-bold">Automatización de PIAR</h5>
-                                    <p class="text-sm text-gray-600">Digitalización y seguimiento de los Planes Individuales de Ajustes Razonables para estudiantes con necesidades educativas especiales.</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Digitalización y seguimiento de los Planes Individuales de Ajustes Razonables para estudiantes con necesidades educativas especiales.</p>
                                 </div>
                             </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md flex items-start">
                                 <span class="text-3xl mr-4">📅</span>
                                 <div>
                                     <h5 class="font-bold">Asistente de Plan de Aula</h5>
-                                    <p class="text-sm text-gray-600">Una herramienta que ayuda a los docentes a estructurar sus planes de aula de acuerdo con las mallas curriculares y estándares institucionales.</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Una herramienta que ayuda a los docentes a estructurar sus planes de aula de acuerdo con las mallas curriculares y estándares institucionales.</p>
                                 </div>
                             </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md flex items-start">
+                            <div class="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md flex items-start">
                                 <span class="text-3xl mr-4">🤖</span>
                                 <div>
                                     <h5 class="font-bold">Generador de Recursos Educativos</h5>
-                                    <p class="text-sm text-gray-600">Utilizando IA, crear una herramienta que genere actividades, talleres y evaluaciones contextualizadas a partir de los estándares y planes de aula.</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Utilizando IA, crear una herramienta que genere actividades, talleres y evaluaciones contextualizadas a partir de los estándares y planes de aula.</p>
                                 </div>
                             </div>
                         </div>
@@ -428,17 +439,17 @@
                 </div>
             </section>
 
-            <section id="cierre" class="py-24 bg-white rounded-2xl shadow-lg section-fade-in my-16">
+            <section id="cierre" class="py-24 bg-white dark:bg-slate-800 rounded-2xl shadow-lg section-fade-in my-16">
                 <div class="text-center">
-                    <h3 class="text-3xl font-bold text-slate-800">Cierre, Reflexión y Próximos Pasos</h3>
-                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Hemos visto el qué, el cómo y el porqué. Ahora, la pregunta más importante es para ustedes.</p>
-                    <div class="bg-teal-50 border-l-4 border-teal-500 text-teal-800 p-6 rounded-r-lg max-w-2xl mx-auto mt-10 text-left">
+                    <h3 class="text-3xl font-bold">Cierre, Reflexión y Próximos Pasos</h3>
+                    <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">Hemos visto el qué, el cómo y el porqué. Ahora, la pregunta más importante es para ustedes.</p>
+                    <div class="bg-teal-50 dark:bg-teal-900/50 border-l-4 border-teal-500 text-teal-800 dark:text-teal-200 p-6 rounded-r-lg max-w-2xl mx-auto mt-10 text-left">
                         <h4 class="font-bold text-xl">Para la Reflexión:</h4>
                         <p class="mt-2 text-lg italic">¿Cómo podría una iniciativa de automatización como esta transformar un proceso en su propia institución o área de trabajo?</p>
                     </div>
                     <div class="mt-12">
-                        <h4 class="text-2xl font-bold text-slate-700">Espacio para Preguntas y Respuestas</h4>
-                        <p class="text-gray-500 mt-2">¡Estamos listos para conversar!</p>
+                        <h4 class="text-2xl font-bold">Espacio para Preguntas y Respuestas</h4>
+                        <p class="text-gray-500 dark:text-gray-400 mt-2">¡Estamos listos para conversar!</p>
                     </div>
                 </div>
             </section>
@@ -446,43 +457,43 @@
     </main>
     
     <div id="case-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center p-4 z-50 modal-backdrop opacity-0">
-        <div class="bg-slate-50 rounded-2xl shadow-2xl w-full max-w-5xl p-8 modal-content opacity-0 transform scale-90 -translate-y-10 overflow-y-auto max-h-[90vh]">
+        <div class="bg-slate-50 dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-5xl p-8 modal-content opacity-0 transform scale-90 -translate-y-10 overflow-y-auto max-h-[90vh]">
             <div class="flex justify-between items-start mb-6">
                 <div>
-                    <h3 id="modal-title" class="text-2xl font-bold text-slate-800"></h3>
-                    <p id="modal-description" class="text-gray-600 mt-1"></p>
+                    <h3 id="modal-title" class="text-2xl font-bold"></h3>
+                    <p id="modal-description" class="text-gray-600 dark:text-gray-400 mt-1"></p>
                 </div>
                 <button id="close-modal-btn" class="text-gray-400 hover:text-gray-800 text-4xl leading-none">&times;</button>
             </div>
             
             <div class="text-center mb-6">
-                <div class="bg-white p-4 rounded-lg inline-block shadow">
-                    <h4 class="font-semibold text-lg text-slate-700">Punto de Partida</h4>
-                    <p class="text-slate-600">Un docente o directivo diligencia el <strong>Formulario de Rutas de Atención</strong>.</p>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-lg inline-block shadow">
+                    <h4 class="font-semibold text-lg">Punto de Partida</h4>
+                    <p class="text-gray-600 dark:text-gray-400">Un docente o directivo diligencia el <strong>Formulario de Rutas de Atención</strong>.</p>
                 </div>
                 <div class="text-4xl text-slate-400 my-2">⬇️</div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div id="internal-route-container" class="bg-white p-6 rounded-lg border border-teal-200 shadow-md">
-                    <h4 class="font-bold text-xl text-teal-800 mb-4 text-center">🏛️ Flujo de Ruta Interna</h4>
+                <div id="internal-route-container" class="bg-white dark:bg-slate-800 p-6 rounded-lg border border-teal-200 dark:border-teal-700 shadow-md">
+                    <h4 class="font-bold text-xl text-teal-800 dark:text-teal-300 mb-4 text-center">🏛️ Flujo de Ruta Interna</h4>
                     <ul id="modal-internal-route" class="space-y-4 relative">
-                        <div class="absolute left-5 top-0 h-full w-0.5 bg-slate-200"></div>
+                        <div class="absolute left-5 top-0 h-full w-0.5 bg-slate-200 dark:bg-slate-700"></div>
                     </ul>
                 </div>
-                <div id="external-route-container" class="bg-white p-6 rounded-lg border border-red-200 shadow-md">
-                     <h4 class="font-bold text-xl text-red-800 mb-4 text-center">🌍 Flujo de Ruta Externa</h4>
+                <div id="external-route-container" class="bg-white dark:bg-slate-800 p-6 rounded-lg border border-red-200 dark:border-red-700 shadow-md">
+                     <h4 class="font-bold text-xl text-red-800 dark:text-red-400 mb-4 text-center">🌍 Flujo de Ruta Externa</h4>
                     <ul id="modal-external-route" class="space-y-4 relative">
-                        <div class="absolute left-5 top-0 h-full w-0.5 bg-slate-200"></div>
+                        <div class="absolute left-5 top-0 h-full w-0.5 bg-slate-200 dark:bg-slate-700"></div>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="bg-slate-800 text-white mt-16">
+    <footer class="bg-slate-800 dark:bg-black mt-16">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
-            <p class="text-xl font-medium italic">“Automatizar no significa deshumanizar; significa liberar el potencial humano para las tareas que verdaderamente importan.”</p>
+            <p class="text-xl font-medium italic text-slate-300">“Automatizar no significa deshumanizar; significa liberar el potencial humano para las tareas que verdaderamente importan.”</p>
             <div class="mt-6 border-t border-slate-700 pt-6 text-slate-400 text-sm">
                 <p class="font-bold text-slate-300 mb-2">Expositores</p>
                 <p>MG. Victor Alonso Aristizábal Sanchez</p>
@@ -494,6 +505,39 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        let timeChart;
+
+        // --- THEME TOGGLE LOGIC ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+        const lookerDashboard = document.getElementById('looker-dashboard');
+        const dashboardBaseUrl = 'https://lookerstudio.google.com/embed/reporting/615595e9-2d29-46f8-be77-4b696884efb1/page/N0MdE';
+
+        const applyTheme = (theme) => {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                darkIcon.classList.remove('hidden');
+                lightIcon.classList.add('hidden');
+                lookerDashboard.src = dashboardBaseUrl + '?theme=dark';
+            } else {
+                document.documentElement.classList.remove('dark');
+                darkIcon.classList.add('hidden');
+                lightIcon.classList.remove('hidden');
+                lookerDashboard.src = dashboardBaseUrl;
+            }
+            createTimeChart(theme);
+        };
+
+        const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        applyTheme(currentTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+        });
+
         // --- Navigation Logic ---
         const sections = document.querySelectorAll('section[id]');
         const navLinks = document.querySelectorAll('.nav-link');
@@ -522,12 +566,52 @@
         document.querySelectorAll('.section-fade-in').forEach(section => fadeObserver.observe(section));
 
         // --- Time Chart ---
-        const ctx = document.getElementById('timeChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar', data: { labels: ['Proceso Manual', 'Proceso Automatizado'], datasets: [{ label: 'Minutos por caso', data: [120, 5], backgroundColor: ['rgba(239, 68, 68, 0.6)', 'rgba(20, 184, 166, 0.6)'], borderColor: ['#EF4444', '#14B8A6'], borderWidth: 2, borderRadius: 5, }] },
-            options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', scales: { x: { beginAtZero: true, title: { display: true, text: 'Tiempo en Minutos' } } }, plugins: { legend: { display: false } } }
-        });
+        function createTimeChart(theme) {
+            const isDark = theme === 'dark';
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            const textColor = isDark ? '#e2e8f0' : '#334155';
 
+            if (timeChart) {
+                timeChart.destroy();
+            }
+
+            const ctx = document.getElementById('timeChart').getContext('2d');
+            timeChart = new Chart(ctx, {
+                type: 'bar', 
+                data: { 
+                    labels: ['Proceso Manual', 'Proceso Automatizado'], 
+                    datasets: [{ 
+                        label: 'Minutos por caso', 
+                        data: [120, 5], 
+                        backgroundColor: ['rgba(239, 68, 68, 0.6)', 'rgba(20, 184, 166, 0.6)'], 
+                        borderColor: ['#EF4444', '#14B8A6'], 
+                        borderWidth: 2, 
+                        borderRadius: 5 
+                    }] 
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    indexAxis: 'y', 
+                    scales: { 
+                        x: { 
+                            beginAtZero: true, 
+                            title: { display: true, text: 'Tiempo en Minutos', color: textColor },
+                            grid: { color: gridColor },
+                            ticks: { color: textColor }
+                        },
+                        y: {
+                            grid: { color: gridColor },
+                            ticks: { color: textColor }
+                        }
+                    }, 
+                    plugins: { 
+                        legend: { display: false } 
+                    } 
+                }
+            });
+        }
+        
         // --- Interactive Demo Logic ---
         const startDemoBtn = document.getElementById('start-demo-btn');
         const flowItems = document.querySelectorAll('.flow-item');
@@ -604,10 +688,10 @@
         function createProcessStep(item) {
             return `
                 <li class="flex items-start cascade-item relative">
-                    <div class="z-10 flex-shrink-0 bg-white h-10 w-10 rounded-full flex items-center justify-center text-xl shadow-md border">${item.icon}</div>
+                    <div class="z-10 flex-shrink-0 bg-white dark:bg-slate-700 h-10 w-10 rounded-full flex items-center justify-center text-xl shadow-md border border-slate-200 dark:border-slate-600">${item.icon}</div>
                     <div class="ml-4">
-                        <p class="font-semibold text-slate-800">${item.title}</p>
-                        <p class="text-sm text-slate-600">${item.text}</p>
+                        <p class="font-semibold text-slate-800 dark:text-slate-100">${item.title}</p>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">${item.text}</p>
                     </div>
                 </li>`;
         }
@@ -666,7 +750,6 @@
             setTimeout(() => {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
-                // Reset cascade items for next open
                 modal.querySelectorAll('.cascade-item').forEach(item => {
                     item.classList.remove('visible');
                     item.style.transitionDelay = '0ms';
@@ -684,3 +767,4 @@
     </script>
 </body>
 </html>
+
